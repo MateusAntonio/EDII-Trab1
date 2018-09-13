@@ -3,8 +3,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define free_city(city) free(city)
-
 struct city{
     int id;
     float x;
@@ -25,18 +23,4 @@ int dist_city(City* cityA, City* cityB){
     return round(sqrt((xd*xd) + (yd*yd)));
 }
 
-int main(int argc, char const *argv[]){
-    City* cityA = init_city(0, 100, 200);
-    City* cityB = init_city(1, 200, 400);
 
-    printf("id: %d, x: %.1f e y: %.1f\n", cityA->id, cityA->x, cityA->y);
-    printf("id: %d, x: %.1f e y: %.1f\n", cityB->id, cityB->x, cityB->y);
-
-    printf("%d\n",dist_city(cityA, cityB));
-
-    free_city(cityA);
-    free_city(cityB);
-
-    
-    return 0;
-}
