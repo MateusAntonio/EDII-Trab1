@@ -1,12 +1,15 @@
 #ifndef FILE_READER_H
 #define FILE_READER_H   
+#include "city.h"
 
 typedef struct tsp TSP;
 
 //inicializa a struct TSP
-TSP* init_tsp(char* name, char* comment, char* type, int dimension, char* edge_weight_type/*, City** node_coord_section*/);
+TSP* init_tsp(char* name, char* comment, char* type, int dimension, char* edge_weight_type);
 
 void print_tsp(TSP* tsp);
+
+void free_tsp_cities(TSP* tsp);
 
 void free_tsp(TSP* tsp);
 

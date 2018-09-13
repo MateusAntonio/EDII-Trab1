@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "fileReader.h"
-//TODO #include "city.h"
 
 
 struct tsp{
@@ -11,10 +10,10 @@ struct tsp{
     char* type;
     int dimension;
     char* edge_weight_type;
-    // City** node_coord_section; //vetor de cidades a ser alocado dinamicamente com tamanho dimension
+    City** node_coord_section; //array of cities with size of dimension
 };
 
-TSP* init_tsp(char* name, char* comment, char* type, int dimension, char* edge_weight_type /*, City** node_coord_section*/){
+TSP* init_tsp(char* name, char* comment, char* type, int dimension, char* edge_weight_type){
     TSP* new_tsp = malloc(sizeof(*new_tsp)); //mallocs the size of the struct
 
     new_tsp->name = malloc(strlen(name)+1); //mallocs the name string
@@ -43,12 +42,18 @@ void print_tsp(TSP* tsp){
 }
 
 
+void free_tsp_cities(TSP* tsp){ //TODO TESTE DESSA FUNCAO 
+    for(int i = 1, i < (tsp->dimension+1); i++){ //starts at 1, cuz array index equals to city id
+        free_city(tsp->node_coord_section[i]);
+    }
+}
+
 void free_tsp(TSP* tsp){
     free(tsp->name);
     free(tsp->comment);
     free(tsp->type);
     free(tsp->edge_weight_type);
-    // free(/****cidades****/); TODO
+    free_tsp_cities(tsp);
     free(tsp);
 }
 
@@ -59,9 +64,9 @@ TSP* read_tsp_file(char* filename){
         return NULL;
     }  
 
-    
 
-    //TODO
+
+    //TODO leitura do arquivo de entrada e inicializaçao da struct
 
     fclose(filename);
 }
