@@ -43,7 +43,7 @@ void print_tsp(TSP* tsp){
 
 
 void free_tsp_cities(TSP* tsp){ //TODO TESTE DESSA FUNCAO 
-    for(int i = 1, i < (tsp->dimension+1); i++){ //starts at 1, cuz array index equals to city id
+    for(int i = 1; i < (tsp->dimension+1); i++){ //starts at 1, cuz array index equals to city id
         free_city(tsp->node_coord_section[i]);
     }
 }
@@ -63,12 +63,59 @@ TSP* read_tsp_file(char* filename){
         printf("File %s does not exist! Aborting!\n", filename);
         return NULL;
     }  
+    printf("file %s aberto com sucesso!\n", filename);
+
+    //reads the name of the problem
+    char name[32] = "";
+    fscanf(file, "%s ", name); //ignore the "NAME: " string
+    fscanf(file, "%s", name);
+
+    //reads the comment of the problem
+    char comment[100] = "";
+    fscanf(file, "%s ", comment); //ignore the "COMMENT: " string
+    fgets(comment, 100, file);
+    comment[strcspn(comment, "\n")] = '\0'; //change the '\n' of the end of the line to a '\0'
+
+    //reads the type of the problem
+    char type[10] = "";
+    fscanf(file, "%s ", type); //ignore the "TYPE: " string
+    fgets(type, 10, file);
+    type[strcspn(type,"\n")] = '\0'; //change the '\n' of the end of the line to a '\0'
+    
+    //reads the dimension of the problem
+    char dimension[10] = "";
+    fscanf(file, "%s ", dimension); //ignore the "DIMENSION: " string
+    fgets(dimension, 10, file);
+    dimension[strcspn(dimension,"\n")] = '\0'; //change the '\n' of the end of the line to a '\0'
+
+
+    //reads the edge_weight_type of the problem
+    char edge_weight_type[32] = "";
+    fscanf(file, "%s ", edge_weight_type); //ignore the "EDGE_WEIGHT_TYPE: " string
+    fgets(edge_weight_type, 32, file);
+    edge_weight_type[strcspn(edge_weight_type, "\n")] = '0'; //change the '\n' of the end of the line to a '\0'
+
+
+    //ignore the NODE_COORD_SECTION line 
+    char buffer[32] = "";
+    fgets(buffer, 32, file);
 
 
 
+
+
+
+
+    printf("nome do problema: %s\n", name);
+    printf("comentario do problema: %s\n", comment);
+    printf("tipo do problema: %s\n", type);
+    printf("tamanho do problema: %s\n", dimension);
+    printf("edge do problema: %s\n", edge_weight_type);    
     //TODO leitura do arquivo de entrada e inicializaçao da struct
 
-    fclose(filename);
+    fclose(file);
+
+    return NULL;
 }
 
 
