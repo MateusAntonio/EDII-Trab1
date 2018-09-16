@@ -42,10 +42,11 @@ void print_tsp(TSP* tsp){
 }
 
 
-void free_tsp_cities(TSP* tsp){ //TODO TESTE DESSA FUNCAO 
-    for(int i = 1; i < (tsp->dimension+1); i++){ //starts at 1, cuz array index equals to city id
+void free_tsp_cities(TSP* tsp){
+    for(int i = 0; i < tsp->dimension; i++){
         free_city(tsp->node_coord_section[i]);
     }
+    free(tsp->node_coord_section);
 }
 
 void free_tsp(TSP* tsp){
@@ -63,7 +64,6 @@ TSP* read_tsp_file(char* filename){
         printf("File %s does not exist! Aborting!\n", filename);
         return NULL;
     }  
-    printf("file %s aberto com sucesso!\n", filename);
 
     char name[32] = "";
     char comment[100] = "";
@@ -105,61 +105,27 @@ TSP* read_tsp_file(char* filename){
     TSP* tsp = init_tsp(name, comment, type, dimension, edge_weight_type); 
 
 
-
     City** city_array = malloc(dimension * sizeof(*city_array));
-    for(int i = 0; i < 4; i++){
-        // TODO leitura das cidades e inserção na struct
+    tsp->node_coord_section = city_array; //sets the node_coord_section as the array just allocated
+
+    for(int i = 0; i < dimension; i++){
         fgets(buffer, 52, file); //read the line which contains the id and Xcoord and Ycoord
 
         char* token = strtok(buffer, " ");
         int city_id = atoi(token);
-        printf("city id: %d\n", city_id);
 
         token = strtok(NULL," ");
         float x = strtod(token, NULL);
-        printf("Xcoord: %.2f\n", x);
 
         token = strtok(NULL," ");
         float y = strtod(token, NULL);
-        printf("Ycoord: %.2f\n", y);
+
+        //creates new city and inserts it on the array
+        City* city = init_city(city_id, x, y); 
+        city_array[i] = city;
     }
-
-
-
-
-
-
-
-
-
-
 
     fclose(file);
 
     return tsp;
 }
-
-
-
-
-
-
-
-
-/*
-******** exemplo de entrada ********
-NAME: berlin52
-COMMENT: 52 locations in Berlin (Groetschel)
-TYPE: TSP
-DIMENSION: 52
-EDGE_WEIGHT_TYPE: EUC_2D
-NODE_COORD_SECTION
-1 565.0 575.0
-2 25.0 185.0
-3 345.0 750.0
-4 945.0 685.0
-...
-52 1740.0 245.0
-EOF
-
-*/
