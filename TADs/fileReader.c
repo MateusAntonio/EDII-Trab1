@@ -65,40 +65,64 @@ TSP* read_tsp_file(char* filename){
     }  
     printf("file %s aberto com sucesso!\n", filename);
 
-    //reads the name of the problem
     char name[32] = "";
+    char comment[100] = "";
+    char type[10] = "";
+    char dimension_[10] = "";
+    char edge_weight_type[32] = "";
+    char buffer[52] = "";
+
+
+    //reads the name of the problem
     fscanf(file, "%s ", name); //ignore the "NAME: " string
     fscanf(file, "%s", name);
 
     //reads the comment of the problem
-    char comment[100] = "";
     fscanf(file, "%s ", comment); //ignore the "COMMENT: " string
     fgets(comment, 100, file);
     comment[strcspn(comment, "\n")] = '\0'; //change the '\n' of the end of the line to a '\0'
 
     //reads the type of the problem
-    char type[10] = "";
     fscanf(file, "%s ", type); //ignore the "TYPE: " string
     fgets(type, 10, file);
     type[strcspn(type,"\n")] = '\0'; //change the '\n' of the end of the line to a '\0'
     
     //reads the dimension of the problem
-    char dimension[10] = "";
-    fscanf(file, "%s ", dimension); //ignore the "DIMENSION: " string
-    fgets(dimension, 10, file);
-    dimension[strcspn(dimension,"\n")] = '\0'; //change the '\n' of the end of the line to a '\0'
-
+    fscanf(file, "%s ", dimension_); //ignore the "DIMENSION: " string
+    fgets(dimension_, 10, file);
+    dimension_[strcspn(dimension_,"\n")] = '\0'; //change the '\n' of the end of the line to a '\0'
 
     //reads the edge_weight_type of the problem
-    char edge_weight_type[32] = "";
     fscanf(file, "%s ", edge_weight_type); //ignore the "EDGE_WEIGHT_TYPE: " string
     fgets(edge_weight_type, 32, file);
     edge_weight_type[strcspn(edge_weight_type, "\n")] = '0'; //change the '\n' of the end of the line to a '\0'
 
-
     //ignore the NODE_COORD_SECTION line 
-    char buffer[32] = "";
-    fgets(buffer, 32, file);
+    fgets(buffer, 52, file);
+
+    //creates and initializes the TSP struct
+    int dimension = atoi(dimension_);
+    TSP* tsp = init_tsp(name, comment, type, dimension, edge_weight_type); 
+
+
+
+    City** city_array = malloc(dimension * sizeof(*city_array));
+    for(int i = 0; i < 4; i++){
+        // TODO leitura das cidades e inserção na struct
+        fgets(buffer, 52, file); //read the line which contains the id and Xcoord and Ycoord
+
+        char* token = strtok(buffer, " ");
+        int city_id = atoi(token);
+        printf("city id: %d\n", city_id);
+
+        token = strtok(NULL," ");
+        float x = strtod(token, NULL);
+        printf("Xcoord: %.2f\n", x);
+
+        token = strtok(NULL," ");
+        float y = strtod(token, NULL);
+        printf("Ycoord: %.2f\n", y);
+    }
 
 
 
@@ -106,16 +130,13 @@ TSP* read_tsp_file(char* filename){
 
 
 
-    printf("nome do problema: %s\n", name);
-    printf("comentario do problema: %s\n", comment);
-    printf("tipo do problema: %s\n", type);
-    printf("tamanho do problema: %s\n", dimension);
-    printf("edge do problema: %s\n", edge_weight_type);    
-    //TODO leitura do arquivo de entrada e inicializaçao da struct
+
+
+
 
     fclose(file);
 
-    return NULL;
+    return tsp;
 }
 
 
