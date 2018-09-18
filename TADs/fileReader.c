@@ -33,12 +33,25 @@ TSP* init_tsp(char* name, char* comment, char* type, int dimension, char* edge_w
     return new_tsp;
 }
 
+int get_tsp_dimension(TSP* tsp){
+    return tsp->dimension;
+}
+
+City** get_tsp_coord_section(TSP* tsp){
+    return tsp->node_coord_section;
+}
+
+
 void print_tsp(TSP* tsp){
     printf("NAME: %s\n", tsp->name);
     printf("COMMENT: %s\n", tsp->comment);
     printf("TYPE: %s\n", tsp->type);
     printf("DIMENSION: %d\n", tsp->dimension);
     printf("EDGE_WEIGHT_TYPE: %s\n", tsp->edge_weight_type);
+    printf("NODE COORD SECTION\n");
+    for(int i = 0; i < tsp->dimension; i++){
+        print_city(tsp->node_coord_section[i]);
+    }
 }
 
 
