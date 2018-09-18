@@ -95,7 +95,7 @@ TSP* read_tsp_file(char* filename){
     //reads the edge_weight_type of the problem
     fscanf(file, "%s ", edge_weight_type); //ignore the "EDGE_WEIGHT_TYPE: " string
     fgets(edge_weight_type, 32, file);
-    edge_weight_type[strcspn(edge_weight_type, "\n")] = '0'; //change the '\n' of the end of the line to a '\0'
+    edge_weight_type[strcspn(edge_weight_type, "\n")] = '\0'; //change the '\n' of the end of the line to a '\0'
 
     //ignore the NODE_COORD_SECTION line 
     fgets(buffer, 52, file);
