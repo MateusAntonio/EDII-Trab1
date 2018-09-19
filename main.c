@@ -10,8 +10,9 @@
 int main(int argc, char* argv[]){
     TSP* tsp = read_tsp_file(argv[argc-1]);
     // print_tsp(tsp);
-    generate_mst(tsp);
-    free_tsp(tsp);
+    MST* mst = generate_mst(tsp);
+    print_mst(mst);
+    free_tsp(tsp); //TODO checar liberação de memoria ***********IMPORTANTE***********
     
     return 0;
 }

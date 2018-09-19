@@ -25,6 +25,6 @@ int dist_city(City* cityA, City* cityB){
 
 void print_city(City* city){
     printf("city id: %d\n", city->id);
-    printf("Xcoord: %.1f\n", city->x);
-    printf("Ycoord: %.1f\n", city->y);
+    // printf("Xcoord: %.1f\n", city->x);
+    // printf("Ycoord: %.1f\n", city->y);
 }
