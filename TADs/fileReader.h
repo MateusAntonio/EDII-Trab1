@@ -1,6 +1,6 @@
 #ifndef FILE_READER_H
 #define FILE_READER_H   
-#include "City.h"
+#include "city.h"
 
 typedef struct tsp TSP;
 

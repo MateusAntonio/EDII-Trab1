@@ -30,6 +30,8 @@ TSP* init_tsp(char* name, char* comment, char* type, int dimension, char* edge_w
     new_tsp->edge_weight_type = malloc(strlen(edge_weight_type)+1); //mallocs the edge weight type string
     strcpy(new_tsp->edge_weight_type, edge_weight_type);
 
+    new_tsp->node_coord_section = malloc(dimension * sizeof(City*));
+
     return new_tsp;
 }
 
@@ -118,9 +120,6 @@ TSP* read_tsp_file(char* filename){
     TSP* tsp = init_tsp(name, comment, type, dimension, edge_weight_type); 
 
 
-    City** city_array = malloc(dimension * sizeof(*city_array)); //**********************TODO ver se nao é melhor alocar dentro da funçao init_tsp
-    tsp->node_coord_section = city_array; //sets the node_coord_section as the array just allocated
-
     for(int i = 0; i < dimension; i++){
         fgets(buffer, 52, file); //read the line which contains the id and Xcoord and Ycoord
 
@@ -135,7 +134,7 @@ TSP* read_tsp_file(char* filename){
 
         //creates new city and inserts it on the array
         City* city = init_city(city_id, x, y); 
-        city_array[i] = city;
+        tsp->node_coord_section[i] = city; //
     }
 
     fclose(file);

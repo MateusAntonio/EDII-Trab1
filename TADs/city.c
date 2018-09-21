@@ -1,4 +1,4 @@
-#include "City.h"
+#include "city.h"
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
