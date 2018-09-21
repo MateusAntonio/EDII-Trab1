@@ -90,11 +90,14 @@ Graph* generate_graph(TSP* tsp){	//TODO  necessario importrar TSP?? pq nao só p
             City a = get_tsp_coord_section(tsp)[i];
             City b = get_tsp_coord_section(tsp)[j];
 
+            printf("cleber\n");
             int distance = dist_city(a, b);
+            printf("distance: %d", distance);
             // printf("DISTANCIAAAAAAA: %d\n\n", distance);
 
 			//creates a new arc and inserts it on the array of arcs
             Arc arc = create_arc(distance, a, b); 
+            printf("size: %d", graph->size);
             graph->arc_array[graph->size] = arc;
             graph->size++;
         }

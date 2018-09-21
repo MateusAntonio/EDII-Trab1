@@ -20,7 +20,7 @@ City init_city(int id, float x, float y){
 int dist_city(City cityA, City cityB){
     int xd = cityB.x - cityA.x;
     int yd = cityB.y - cityA.y;
-    return round(sqrt((xd*xd) + (yd*yd)));
+    return round(sqrt((xd*xd) + (yd*yd))); //TODO isso vai dar merda no maior caso de teste
 }
 
 void print_city(City city){
