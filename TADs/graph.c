@@ -28,10 +28,10 @@ Arc* create_arc(int weight, City* cityA, City* cityB){
 }
 
 int arc_compare(const void* arc1, const void* arc2){
-	Arc* a1 = (Arc*)arc1;
-	Arc* a2 = (Arc*)arc2;
+	Arc* a1 = *(Arc**)arc1;
+	Arc* a2 = *(Arc**)arc2;
 
-	return (a1->weight > a2->weight);
+	return (a1->weight - a2->weight);
 }
 
 void print_arc(Arc* arc){
@@ -94,19 +94,13 @@ Graph* generate_graph(TSP* tsp){	//TODO  necessario importrar TSP?? pq nao só p
 
 void print_graph(Graph* graph){
     for(int i = 0; i < graph->size; i++){
-        print_arc((Arc*)graph->arc_array[i]);
+        print_arc(graph->arc_array[i]);
     }
 }
 
 
-void sort_graph(Graph* graph){ //TODO algo acontece aq de nao sei explicar
-	qsort(graph->arc_array, graph->size+1, sizeof(City*), arc_compare);
-	printf("\nCLEBERRRRRRRRR\n");
-
-	teste(graph);
-	// for(int i = 0; i <= graph->size; i++){
-	// 	print_arc(graph->arc_array[i]);
-	// }
+void sort_graph(Graph* graph){ //TODO algo acontece aq q nao sei explicar
+	qsort(graph->arc_array, graph->size, sizeof(Arc*), arc_compare);
 }
 
 void teste(Graph* g){

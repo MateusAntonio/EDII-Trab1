@@ -13,8 +13,8 @@ int main(int argc, char* argv[]){
     Graph* g = generate_graph(tsp);
     print_graph(g);
     sort_graph(g);
-    // printf("\n************ SORTED ************\n\n");
-    // print_graph(g);
+    printf("\n************ SORTED ************\n\n");
+    print_graph(g);
     free_tsp(tsp); //TODO checar liberação de memoria ***********IMPORTANTE***********
     
     return 0;
