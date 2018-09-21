@@ -10,6 +10,8 @@ Graph* generate_graph(TSP* tsp);
 
 void print_graph(Graph* graph);
 
+void free_graph(Graph* graph);
+
 void sort_graph(Graph* graph);
 
 int arc_compare(const void* arc1, const void* arc2);

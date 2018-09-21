@@ -9,7 +9,7 @@ TSP* init_tsp(char* name, char* comment, char* type, int dimension, char* edge_w
 
 int get_tsp_dimension(TSP* tsp);
 
-City** get_tsp_coord_section(TSP* tsp);
+City* get_tsp_coord_section(TSP* tsp);
 
 void print_tsp(TSP* tsp);
 

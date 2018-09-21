@@ -6,39 +6,39 @@
 //struct to represent an Arc of a graph
 typedef struct arc{
     int weight;		//distance between the cities
-    City* cityA;
-    City* cityB;
+    City cityA;
+    City cityB;
 }Arc;
 
 //struct to represent a graph based on a list of Arcs
 struct graph{
     int size;			//number of arcs in the graph
-    Arc** arc_array;	//list of arcs of the graph
+    Arc* arc_array;	//list of arcs of the graph
 };
 
 
-Arc* create_arc(int weight, City* cityA, City* cityB){
-    Arc* new_arc = malloc(sizeof(*new_arc));
+Arc create_arc(int weight, City cityA, City cityB){
+    Arc new_arc;
 
-    new_arc->weight = weight;
-    new_arc->cityA = cityA;
-    new_arc->cityB = cityB;
+    new_arc.weight = weight;
+    new_arc.cityA = cityA;
+    new_arc.cityB = cityB;
 
     return new_arc;
 }
 
-int arc_compare(const void* arc1, const void* arc2){
-	Arc* a1 = *(Arc**)arc1;
-	Arc* a2 = *(Arc**)arc2;
+int arc_compare(const void* arc1, const void* arc2){ //TODO mudar isso dps
+	Arc a1 = *(Arc*)arc1;
+	Arc a2 = *(Arc*)arc2;
 
-	return (a1->weight - a2->weight);
+	return (a1.weight - a2.weight);
 }
 
-void print_arc(Arc* arc){
-    printf("\nweight %d\n",arc->weight);
+void print_arc(Arc arc){
+    printf("\nweight %d\n",arc.weight);
     printf("ARC:\n");
-    print_city((City*)arc->cityA);
-    print_city((City*)arc->cityB);
+    print_city(arc.cityA);
+    print_city(arc.cityB);
 }
 
 
@@ -48,11 +48,23 @@ Graph* init_graph(int dimension){
     new_graph->size = 0;
 
     int array_size = calc_arc_array_size(dimension);
-    new_graph->arc_array = malloc(array_size * sizeof(Arc*));
+    new_graph->arc_array = malloc(array_size * sizeof(Arc));
 
     return new_graph;
 }
 
+
+void print_graph(Graph* graph){
+    for(int i = 0; i < graph->size; i++){
+        print_arc(graph->arc_array[i]);
+    }
+}
+
+
+void free_graph(Graph* graph){
+    free(graph->arc_array);
+    free(graph);
+}
 
 int calc_arc_array_size(int dimension){ //calculates the max different arcs possible 
     int sum = 0;
@@ -75,14 +87,14 @@ Graph* generate_graph(TSP* tsp){	//TODO  necessario importrar TSP?? pq nao só p
             // print_city(get_tsp_coord_section(tsp)[j]);
 
             //calculates the distance between two difenrent cities and creates a Arc struct
-            City* a = get_tsp_coord_section(tsp)[i];
-            City* b = get_tsp_coord_section(tsp)[j];
+            City a = get_tsp_coord_section(tsp)[i];
+            City b = get_tsp_coord_section(tsp)[j];
 
             int distance = dist_city(a, b);
             // printf("DISTANCIAAAAAAA: %d\n\n", distance);
 
 			//creates a new arc and inserts it on the array of arcs
-            Arc* arc = create_arc(distance, a, b); 
+            Arc arc = create_arc(distance, a, b); 
             graph->arc_array[graph->size] = arc;
             graph->size++;
         }
@@ -92,27 +104,23 @@ Graph* generate_graph(TSP* tsp){	//TODO  necessario importrar TSP?? pq nao só p
 }
 
 
-void print_graph(Graph* graph){
-    for(int i = 0; i < graph->size; i++){
-        print_arc(graph->arc_array[i]);
-    }
-}
 
 
 void sort_graph(Graph* graph){ //TODO algo acontece aq q nao sei explicar
-	qsort(graph->arc_array, graph->size, sizeof(Arc*), arc_compare);
+	qsort(graph->arc_array, graph->size, sizeof(Arc), arc_compare);
 }
 
-void teste(Graph* g){
-	printf("maiooooooooooooor %d\n", arc_compare(g->arc_array[0], g->arc_array[1]) );
-	printf("maiooooooooooooor %d\n", arc_compare(g->arc_array[1], g->arc_array[2]) );
-	printf("maiooooooooooooor %d\n", arc_compare(g->arc_array[2], g->arc_array[3]) );
-}
+// void teste(Graph* g){
+// 	printf("maiooooooooooooor %d\n", arc_compare(g->arc_array[0], g->arc_array[1]) );
+// 	printf("maiooooooooooooor %d\n", arc_compare(g->arc_array[1], g->arc_array[2]) );
+// 	printf("maiooooooooooooor %d\n", arc_compare(g->arc_array[2], g->arc_array[3]) );
+// }
+
 /*TODO
 	*alocar vetorzao para todos os arcos da graph								OK  
 	*calcular a distancia entre todas as cidades e inicializar a struct ARC		OK
 	*inserir todos os arcos criados no vetorzao									OK
-	*ordenar por ordem nao-decrescente											
+	*ordenar por ordem nao-decrescente											OK
 	*union-find																	
     *liberar os bagulho(ver direito pq acho q vai dar merda)
 */

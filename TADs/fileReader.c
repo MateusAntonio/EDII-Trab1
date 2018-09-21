@@ -10,7 +10,7 @@ struct tsp{
     char* type;
     int dimension;
     char* edge_weight_type;
-    City** node_coord_section; //array of cities with size of dimension
+    City* node_coord_section; //array of cities with size of dimension
 };
 
 TSP* init_tsp(char* name, char* comment, char* type, int dimension, char* edge_weight_type){
@@ -30,7 +30,7 @@ TSP* init_tsp(char* name, char* comment, char* type, int dimension, char* edge_w
     new_tsp->edge_weight_type = malloc(strlen(edge_weight_type)+1); //mallocs the edge weight type string
     strcpy(new_tsp->edge_weight_type, edge_weight_type);
 
-    new_tsp->node_coord_section = malloc(dimension * sizeof(City*));
+    new_tsp->node_coord_section = malloc(dimension * sizeof(City));
 
     return new_tsp;
 }
@@ -39,7 +39,7 @@ int get_tsp_dimension(TSP* tsp){
     return tsp->dimension;
 }
 
-City** get_tsp_coord_section(TSP* tsp){
+City* get_tsp_coord_section(TSP* tsp){
     return tsp->node_coord_section;
 }
 
@@ -57,19 +57,12 @@ void print_tsp(TSP* tsp){
 }
 
 
-void free_tsp_cities(TSP* tsp){
-    for(int i = 0; i < tsp->dimension; i++){
-        free_city(tsp->node_coord_section[i]);
-    }
-    free(tsp->node_coord_section);
-}
-
 void free_tsp(TSP* tsp){
     free(tsp->name);
     free(tsp->comment);
     free(tsp->type);
     free(tsp->edge_weight_type);
-    free_tsp_cities(tsp);
+    free(tsp->node_coord_section);
     free(tsp);
 }
 
@@ -133,8 +126,8 @@ TSP* read_tsp_file(char* filename){
         float y = strtod(token, NULL);
 
         //creates new city and inserts it on the array
-        City* city = init_city(city_id, x, y); 
-        tsp->node_coord_section[i] = city; //
+        City city = init_city(city_id, x, y); 
+        tsp->node_coord_section[i] = city;
     }
 
     fclose(file);
