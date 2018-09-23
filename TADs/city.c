@@ -17,9 +17,9 @@ City init_city(int id, float x, float y){
     return city;
 }
 
-int dist_city(City cityA, City cityB){
-    int xd = cityB.x - cityA.x;
-    int yd = cityB.y - cityA.y;
+unsigned int dist_city(City cityA, City cityB){
+    unsigned int xd = cityB.x - cityA.x;
+    unsigned int yd = cityB.y - cityA.y;
     return round(sqrt((xd*xd) + (yd*yd))); //TODO isso vai dar merda no maior caso de teste
 }
 
@@ -27,4 +27,8 @@ void print_city(City city){
     printf("city id: %d\n", city.id);
     // printf("Xcoord: %.1f\n", city->x);
     // printf("Ycoord: %.1f\n", city->y);
+}
+
+int get_city_id(City city){
+    return city.id;
 }

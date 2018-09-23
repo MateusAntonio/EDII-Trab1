@@ -13,8 +13,6 @@ City* get_tsp_coord_section(TSP* tsp);
 
 void print_tsp(TSP* tsp);
 
-void free_tsp_cities(TSP* tsp);
-
 void free_tsp(TSP* tsp);
 
 TSP* read_tsp_file(char* filename);
