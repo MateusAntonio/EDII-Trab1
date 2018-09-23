@@ -182,7 +182,7 @@ Graph* generate_mst(Graph* graph, int mst_dimension){
         }
     }
 
-    //freeds the allocated memory for the UF operation
+    //free the allocated memory for the UF operation
     free(id);   
     free(sz);
 
@@ -190,7 +190,7 @@ Graph* generate_mst(Graph* graph, int mst_dimension){
 }
 
 
-
+// int* dfs(Graph* graph, )                 ************     TODO     ************
 
 /*TODO
 	*alocar vetorzao para todos os arcos da graph								OK  
@@ -198,5 +198,7 @@ Graph* generate_mst(Graph* graph, int mst_dimension){
 	*inserir todos os arcos criados no vetorzao									OK
 	*ordenar por ordem nao-decrescente											OK
 	*GERAR A MST                                                                OK
+    *pesquisa primeiro em profundidade ????
+    *tour
     *liberar os bagulho(ver direito pq acho q vai dar merda)                    RESPECT MY HISTORY
 */
