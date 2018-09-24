@@ -32,20 +32,15 @@ int main(int argc, char* argv[]){
 
     //gerenates the graph based on the cities read from the input file
     Graph* graph = generate_graph(city_array, tsp_dimension);
-                    // printf("\n************ NOT SORTED ************\n");
-                    // print_graph(graph);
 
 
+    printf("gerou grafo!!!!!!!!!\n");
     //sorts the graph by its edges weight
     sort_graph(graph);
-                    // printf("\n************ SORTED ************\n");
-                    // print_graph(graph);
 
 
     //uses the sorted edges to create the MST using the kruskal algorithm
-    Graph* mst = generate_mst(graph, tsp_dimension);
-                    // printf("\n************ MINIMAL SPANNING TREE ************\n");
-                    // print_graph(mst);
+    // Graph* mst = generate_mst(graph, tsp_dimension);
 
 
     //free the complete graph that wont be used anymore
@@ -53,7 +48,7 @@ int main(int argc, char* argv[]){
     printf("liberando grafo..\n");
 
 
-    write_mst(tsp_name, tsp_type, tsp_dimension, mst);
+    // write_mst(tsp_name, tsp_type, tsp_dimension, mst);
     //execute a depth-first-search in the mst to generate the tour
     //TODO
 
@@ -65,7 +60,7 @@ int main(int argc, char* argv[]){
     free_tsp(tsp); 
 
     printf("liberando mst..\n");
-    free_graph(mst);
+    // free_graph(mst);
     //TODO checar liberação de memoria ***********IMPORTANTE***********
     
     return 0;
