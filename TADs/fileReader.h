@@ -7,6 +7,10 @@ typedef struct tsp TSP;
 //inicializa a struct TSP
 TSP* init_tsp(char* name, char* comment, char* type, int dimension, char* edge_weight_type);
 
+char* get_tsp_name(TSP* tsp);
+
+char* get_tsp_type(TSP* tsp);
+
 int get_tsp_dimension(TSP* tsp);
 
 City* get_tsp_coord_section(TSP* tsp);

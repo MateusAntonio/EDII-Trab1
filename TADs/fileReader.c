@@ -35,6 +35,14 @@ TSP* init_tsp(char* name, char* comment, char* type, int dimension, char* edge_w
     return new_tsp;
 }
 
+char* get_tsp_name(TSP* tsp){
+    return tsp->name;
+}
+
+char* get_tsp_type(TSP* tsp){
+    return tsp->type;
+}
+
 int get_tsp_dimension(TSP* tsp){
     return tsp->dimension;
 }

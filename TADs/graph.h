@@ -17,4 +17,6 @@ int arc_compare(const void* arc1, const void* arc2);
 
 Graph* generate_mst(Graph* graph, int mst_dimension);
 
+void write_mst(char* name, char* type, int dimension, Graph* mst);
+
 #endif //GRAPH_H

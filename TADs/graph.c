@@ -3,6 +3,11 @@
 #include <stdbool.h>
 #include "graph.h"
 #include "city.h"
+#include "fileWriter.h"
+
+#define WHITE 0
+#define BLUE 1
+#define RED 2
 
 int* id;
 int* sz;
@@ -19,7 +24,17 @@ typedef struct arc{
 //struct to represent a graph based on a list of Arcs
 struct graph{
     int size;			//number of arcs in the graph
-    Arc* arc_array;	//list of arcs of the graph
+    Arc* arc_array;	    //list of arcs of the graph
+};
+
+//aux struct to do a depth-first-search
+struct vertex{
+    int id;             //id of the vertex
+    int* Adj;           //list of adjacency
+    int color;          //color during the depth-first-search
+    int father_id;      //father id
+    int d;              //time the vertex was discovered
+    int f;              //time the vertex was finished
 };
 
 
@@ -88,18 +103,11 @@ Graph* generate_graph(void* array, int dimension){
     Graph* graph = init_graph(calc_arc_array_size(dimension)); //graph with all arcs of the problem
     
     for(int i = 0; i < dimension-1; i++){   
-        // printf("******************CIDADEEE*********************\n");
-        // print_city(city_array[i]);
         for(int j = i+1; j < dimension; j++){
-            // printf("CIDADEEE    ");
-            // print_city(city_array[j]);
-
-            //calculates the distance between two difenrent cities and creates an Arc struct
+            //calculates the distance between two difenrent cities
             City a = city_array[i];
             City b = city_array[j];
-
-            unsigned int distance = dist_city(a, b);                 //TODO estoura o limite de inteiros no maior teste
-            // printf("DISTANCIAAAAAAA: %d\n\n", distance);
+            unsigned int distance = dist_city(a, b);
 
 			//creates a new arc and inserts it on the array of arcs
             Arc arc = create_arc(distance, a, b); 
@@ -166,8 +174,8 @@ Graph* generate_mst(Graph* graph, int mst_dimension){
     UF_init(mst_dimension+1); //union find must have an array with the size of vertex
 
     for(int i = 0; i < graph->size; i++){   
-        City a = graph->arc_array[i].cityA;
-        City b = graph->arc_array[i].cityB;
+        City a = graph->arc_array[i].cityA;     //get the first city of the arc
+        City b = graph->arc_array[i].cityB;     //get the second city of the arc
 
         int A_id = get_city_id(a);
         int B_id = get_city_id(b);
@@ -190,7 +198,16 @@ Graph* generate_mst(Graph* graph, int mst_dimension){
 }
 
 
-// int* dfs(Graph* graph, )                 ************     TODO     ************
+void write_mst(char* name, char* type, int dimension, Graph* mst){
+    write_mst_info(name, type, dimension);
+    for(int i = 0; i < mst->size; i++){
+        int id1 = get_city_id(mst->arc_array[i].cityA);
+        int id2 = get_city_id(mst->arc_array[i].cityB);
+        write_mst_arc(id1, id2);
+    }
+    write_mst_eof();
+    close_mst_file();
+}
 
 /*TODO
 	*alocar vetorzao para todos os arcos da graph								OK  

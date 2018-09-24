@@ -24,6 +24,8 @@ int main(int argc, char* argv[]){
     TSP* tsp = read_tsp_file(argv[argc-1]);
 
     //keep the useful data in variables
+    char* tsp_name = get_tsp_name(tsp);
+    char* tsp_type = get_tsp_type(tsp); 
     int tsp_dimension = get_tsp_dimension(tsp);
     City* city_array = get_tsp_coord_section(tsp);
 
@@ -51,6 +53,7 @@ int main(int argc, char* argv[]){
     printf("liberando grafo..\n");
 
 
+    write_mst(tsp_name, tsp_type, tsp_dimension, mst);
     //execute a depth-first-search in the mst to generate the tour
     //TODO
 
