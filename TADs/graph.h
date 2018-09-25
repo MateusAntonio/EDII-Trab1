@@ -19,4 +19,6 @@ Graph* generate_mst(Graph* graph, int mst_dimension);
 
 void write_mst(char* name, char* type, int dimension, Graph* mst);
 
+void write_tour(char* name, int dimension);
+
 #endif //GRAPH_H

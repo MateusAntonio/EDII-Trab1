@@ -4,14 +4,7 @@
 #include "graph.h"
 #include "city.h"
 #include "fileWriter.h"
-
-#define WHITE 0
-#define BLUE 1
-#define RED 2
-
-int* id;
-int* sz;
-int N;
+#include "UF.h"
 
 
 //struct to represent an Arc of a graph
@@ -102,7 +95,7 @@ Graph* generate_graph(void* array, int dimension){
     City* city_array = (City*)array;
     Graph* graph = init_graph(calc_arc_array_size(dimension)); //graph with all arcs of the problem
     
-    for(int i = 0; i < dimension-1; i++){   
+    for(int i = 0; i < dimension-1; i++){ 
         for(int j = i+1; j < dimension; j++){
             //calculates the distance between two difenrent cities
             City a = city_array[i];
@@ -126,48 +119,6 @@ void sort_graph(Graph* graph){
 }
 
 
-//******************************************
-// "Weighted QU + path compression" adapted from source code presented on class
-void UF_init(int size){
-    N = size;
-    id = malloc(N * sizeof(*id));
-    sz = malloc(N * sizeof(*sz));
-    for(int i = 0; i < N; i++){
-        id[i] = i;
-        sz[i] = 1;
-    }
-}
-
-
-int UF_find(int i){
-    while(i != id[i])
-        i = id[i];
-    return i;
-}
-
-
-void UF_union(int p, int q){
-    int i = UF_find(p);
-    int j = UF_find(q);
-
-    if(i == j)
-        return;
-    if(sz[i] < sz[j]){
-        id[i] = j;
-        sz[j] += sz[i];
-    }else{
-        id[j] = i;
-        sz[i] += sz[j];
-    }
-}
-
-
-bool UF_connected(int p, int q){
-    return UF_find(p) == UF_find(q);
-}
-//******************************************
-
-
 Graph* generate_mst(Graph* graph, int mst_dimension){
     /*KRUSKAL ALGORITHM*/
     Graph* mst = init_graph(mst_dimension); //mst must contain the number of vertex-1 arcs 
@@ -189,10 +140,7 @@ Graph* generate_mst(Graph* graph, int mst_dimension){
             if(mst->size == mst_dimension) break; //when mst is complete stop
         }
     }
-
-    //free the allocated memory for the UF operation
-    free(id);   
-    free(sz);
+    UF_free();
 
     return mst;
 }
@@ -206,8 +154,18 @@ void write_mst(char* name, char* type, int dimension, Graph* mst){
         write_mst_arc(id1, id2);
     }
     write_mst_eof();
-    close_mst_file();
+    // close_mst_file();
 }
+
+
+void write_tour(char* name, int dimension){ //TODO receber vetor de int com o tour
+    write_tour_info(name, dimension);
+    // for(int i = 0; i < AAAAAAAA;i++ ){
+    //     //TODO
+    // }
+    write_tour_eof();
+}
+
 
 /*TODO
 	*alocar vetorzao para todos os arcos da graph								OK  
