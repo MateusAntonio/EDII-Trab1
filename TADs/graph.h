@@ -21,4 +21,8 @@ void write_mst(char* name, char* type, int dimension, Graph* mst);
 
 void write_tour(char* name, int dimension);
 
+void teste();
+
+int* generate_tour(Graph* mst);
+
 #endif //GRAPH_H

@@ -14,20 +14,18 @@ typedef struct arc{
     City cityB;
 }Arc;
 
+//aux struct to generate the tour
+typedef struct vertex{
+    int id;             //id of the vertex
+    int Adj[6];         //list of adjacency
+}Vertex;
+
+Vertex* vertex_vet; //array to the used in the tour generation
+
 //struct to represent a graph based on a list of Arcs
 struct graph{
     int size;			//number of arcs in the graph
     Arc* arc_array;	    //list of arcs of the graph
-};
-
-//aux struct to do a depth-first-search
-struct vertex{
-    int id;             //id of the vertex
-    int* Adj;           //list of adjacency
-    int color;          //color during the depth-first-search
-    int father_id;      //father id
-    int d;              //time the vertex was discovered
-    int f;              //time the vertex was finished
 };
 
 
@@ -57,6 +55,61 @@ void print_arc(Arc arc){
     print_city(arc.cityB);
 }
 
+
+Vertex create_vertex(int id){
+    Vertex new_vertex;
+
+    new_vertex.id = id;
+    for(int i = 0; i < 6; i++)
+        new_vertex.Adj[i] = 0;
+
+    return new_vertex;
+}
+
+
+Vertex add_adj_vertex(Vertex vertex, int adj_id){
+    for(int i = 0; i < 6; i++){
+        if(vertex.Adj[i] == 0){
+            vertex.Adj[i] = adj_id;
+            break;
+        }
+    }
+    return vertex;
+}
+ 
+
+void print_vertex(Vertex v){
+    printf("vertex id: %d\n", v.id);
+    printf("Adj: ");
+    for(int i = 0; i < 6; i++){
+        if(v.Adj[i] != 0)
+            printf("%d ", v.Adj[i]);
+    }
+    printf("\n");
+}
+
+void teste(){
+    Vertex vet[2];
+
+    Vertex v1 = create_vertex(1);
+    Vertex v2 = create_vertex(2);
+    Vertex v3 = create_vertex(3);
+
+    v1 = add_adj_vertex(v1, 2);
+    v1 = add_adj_vertex(v1, 3);
+
+    v2 = add_adj_vertex(v2, 1);
+    v2 = add_adj_vertex(v2, 3);
+
+
+    vet[0] = v1;
+    vet[1] = v2;
+    vet[3] = v3;
+
+    print_vertex(v1);
+    print_vertex(v2);
+    print_vertex(v3);
+}
 
 Graph* init_graph(int dimension){
     Graph* new_graph = malloc(sizeof(*new_graph));
@@ -119,10 +172,20 @@ void sort_graph(Graph* graph){
 }
 
 
+void init_tour(int dimension){
+    vertex_vet = malloc(dimension+1 * sizeof(vertex_vet));
+
+    for(int i = 1; i < dimension+1; i++)     //init the array of vertex wich the id is the index 
+        create_vertex(i);
+}
+
+
 Graph* generate_mst(Graph* graph, int mst_dimension){
     /*KRUSKAL ALGORITHM*/
     Graph* mst = init_graph(mst_dimension); //mst must contain the number of vertex-1 arcs 
     UF_init(mst_dimension+1); //union find must have an array with the size of vertex
+
+    // init_tour(mst_dimension);
 
     for(int i = 0; i < graph->size; i++){   
         City a = graph->arc_array[i].cityA;     //get the first city of the arc
@@ -136,6 +199,11 @@ Graph* generate_mst(Graph* graph, int mst_dimension){
             mst->arc_array[mst->size] = mst_arc;        //TODO posso fazer tudo numa linha só
             mst->size++;
 
+            //when its a arc adds the id of the city on the adj list of the other
+            // vertex_vet[A_id] = add_adj_vertex(vertex_vet[A_id], B_id);
+            // vertex_vet[B_id] = add_adj_vertex(vertex_vet[B_id], A_id);            
+
+
             UF_union(A_id, B_id); //unites the sets 
             if(mst->size == mst_dimension) break; //when mst is complete stop
         }
@@ -145,6 +213,29 @@ Graph* generate_mst(Graph* graph, int mst_dimension){
     return mst;
 }
 
+
+int* generate_tour(Graph* mst){
+    int dimension = mst->size;
+
+    int j;
+    init_tour(dimension);
+
+    for ( j = 0; j < dimension; j++){
+        int A_id = get_city_id(mst->arc_array[j].cityA);
+        int B_id = get_city_id(mst->arc_array[j].cityB);
+
+        vertex_vet[A_id] = add_adj_vertex(vertex_vet[A_id], B_id);
+        vertex_vet[B_id] = add_adj_vertex(vertex_vet[B_id], A_id);            
+    }
+
+
+    for(int i = 1; i < dimension+1; i++) // TODO ta soh printando ainda
+        print_vertex(vertex_vet[i]);
+
+    free(vertex_vet);
+
+    return NULL; //TODO mudar retorno
+}
 
 void write_mst(char* name, char* type, int dimension, Graph* mst){
     write_mst_info(name, type, dimension);
