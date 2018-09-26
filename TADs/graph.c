@@ -6,6 +6,13 @@
 #include "fileWriter.h"
 #include "UF.h"
 
+typedef struct vertex Vertex;
+
+//global variables
+Vertex* vertex_vet;         //array to the used in the tour generation
+int* tour;                  //array with the sequence of cities id 
+int tour_index = 0;
+
 
 //struct to represent an Arc of a graph
 typedef struct arc{
@@ -15,12 +22,11 @@ typedef struct arc{
 }Arc;
 
 //aux struct to generate the tour
-typedef struct vertex{
+struct vertex{
     int id;             //id of the vertex
+    bool visited;       //check if the vertex was already discovered
     int Adj[6];         //list of adjacency
-}Vertex;
-
-Vertex* vertex_vet; //array to the used in the tour generation
+};
 
 //struct to represent a graph based on a list of Arcs
 struct graph{
@@ -60,6 +66,7 @@ Vertex create_vertex(int id){
     Vertex new_vertex;
 
     new_vertex.id = id;
+    new_vertex.visited = false;
     for(int i = 0; i < 6; i++)
         new_vertex.Adj[i] = 0;
 
@@ -88,28 +95,6 @@ void print_vertex(Vertex v){
     printf("\n");
 }
 
-void teste(){
-    Vertex vet[2];
-
-    Vertex v1 = create_vertex(1);
-    Vertex v2 = create_vertex(2);
-    Vertex v3 = create_vertex(3);
-
-    v1 = add_adj_vertex(v1, 2);
-    v1 = add_adj_vertex(v1, 3);
-
-    v2 = add_adj_vertex(v2, 1);
-    v2 = add_adj_vertex(v2, 3);
-
-
-    vet[0] = v1;
-    vet[1] = v2;
-    vet[3] = v3;
-
-    print_vertex(v1);
-    print_vertex(v2);
-    print_vertex(v3);
-}
 
 Graph* init_graph(int dimension){
     Graph* new_graph = malloc(sizeof(*new_graph));
@@ -135,19 +120,9 @@ void free_graph(Graph* graph){
 }
 
 
-int calc_arc_array_size(int dimension){ //calculates the max different arcs possible 
-    int sum = 0;
-    for(int cont = dimension-1; cont > 0; cont--){ // (dimension-1) + (dimension-2) + ... + 1
-      sum += cont;
-    }
-	return sum;
-}
-
-
 Graph* generate_graph(void* array, int dimension){
     City* city_array = (City*)array;
-    Graph* graph = init_graph(calc_arc_array_size(dimension)); //graph with all arcs of the problem
-    
+    Graph* graph = init_graph(((dimension*dimension)-dimension)/2); //graph with all arcs of the problem
     for(int i = 0; i < dimension-1; i++){ 
         for(int j = i+1; j < dimension; j++){
             //calculates the distance between two difenrent cities
@@ -156,10 +131,7 @@ Graph* generate_graph(void* array, int dimension){
             unsigned int distance = dist_city(a, b);
 
 			//creates a new arc and inserts it on the array of arcs
-            Arc arc = create_arc(distance, a, b); 
-
-            graph->arc_array[graph->size] = arc;
-            graph->size++;
+            graph->arc_array[graph->size++] = create_arc(distance, a, b);
         }
     }
 
@@ -173,7 +145,7 @@ void sort_graph(Graph* graph){
 
 
 void init_tour(int dimension){
-    vertex_vet = malloc(dimension+1 * sizeof(Vertex));
+    vertex_vet = malloc((dimension+1) * sizeof(Vertex));
   
     for(int i = 0; i < dimension+1; i++)     //init the array of vertex wich the id is the index 
         vertex_vet[i] = create_vertex(i);
@@ -185,23 +157,18 @@ Graph* generate_mst(Graph* graph, int mst_dimension){
     Graph* mst = init_graph(mst_dimension); //mst must contain the number of vertex-1 arcs 
     UF_init(mst_dimension+1); //union find must have an array with the size of vertex
 
-    // init_tour(mst_dimension+1); //TODO seg fault
+    init_tour(mst_dimension+1); //init the array wich contains the sequence of the tour
 
     for(int i = 0; i < graph->size; i++){   
-        City a = graph->arc_array[i].cityA;     //get the first city of the arc
-        City b = graph->arc_array[i].cityB;     //get the second city of the arc
-
-        int A_id = get_city_id(a);
-        int B_id = get_city_id(b);
+        int A_id = get_city_id(graph->arc_array[i].cityA);      //get the id of the first city of the arc
+        int B_id = get_city_id(graph->arc_array[i].cityB);      //get the id of the second city of the arc
 
         if(!UF_connected(A_id, B_id)){  //verify if the components are in the same set 
-            Arc mst_arc = graph->arc_array[i];          
-            mst->arc_array[mst->size] = mst_arc;        //TODO posso fazer tudo numa linha só
-            mst->size++;
+            mst->arc_array[mst->size++] = graph->arc_array[i];
 
             //when its a arc adds the id of the city on the adj list of the other
-            // vertex_vet[A_id] = add_adj_vertex(vertex_vet[A_id], B_id);
-            // vertex_vet[B_id] = add_adj_vertex(vertex_vet[B_id], A_id);            
+            vertex_vet[A_id] = add_adj_vertex(vertex_vet[A_id], B_id);
+            vertex_vet[B_id] = add_adj_vertex(vertex_vet[B_id], A_id);            
 
 
             UF_union(A_id, B_id); //unites the sets 
@@ -214,32 +181,25 @@ Graph* generate_mst(Graph* graph, int mst_dimension){
 }
 
 
-// int* generate_tour(Graph* mst){
-//     int dimension = mst->size;
-
-//     int j;
-//     init_tour(dimension+1);
-
-//     for ( j = 0; j < dimension; j++){
-//         int A_id = get_city_id(mst->arc_array[j].cityA);
-//         int B_id = get_city_id(mst->arc_array[j].cityB);
-
-
-//         vertex_vet[A_id] = add_adj_vertex(vertex_vet[A_id], B_id);
-//         // print_vertex(vertex_vet[A_id]);
-//         vertex_vet[B_id] = add_adj_vertex(vertex_vet[B_id], A_id);
-//         // print_vertex(vertex_vet[B_id]);
-
-//     }
+void dfs(Vertex v){
+    vertex_vet[v.id].visited = true;
+    tour[tour_index++] = v.id;
+    
+    for(int i = 0; i < 6; i++){
+        //check  if there is connection to other vertex and if vertex is already visited
+        int neighbor = vertex_vet[v.id].Adj[i];
+        if( (neighbor != 0) && (!vertex_vet[neighbor].visited) )
+            dfs(vertex_vet[neighbor]);
+    }
+}
 
 
-//     for(int i = 0; i < dimension+2; i++) // TODO ta soh printando ainda
-//         print_vertex(vertex_vet[i]);
+void generate_tour(int dimension){
+    tour = malloc(dimension * sizeof(*tour));
 
-//     free(vertex_vet);
+    dfs(vertex_vet[1]);
+}
 
-//     return NULL; //TODO mudar retorno
-// }
 
 void write_mst(char* name, char* type, int dimension, Graph* mst){
     write_mst_info(name, type, dimension);
@@ -249,26 +209,18 @@ void write_mst(char* name, char* type, int dimension, Graph* mst){
         write_mst_arc(id1, id2);
     }
     write_mst_eof();
-    // close_mst_file();
 }
 
 
 void write_tour(char* name, int dimension){ //TODO receber vetor de int com o tour
     write_tour_info(name, dimension);
-    // for(int i = 0; i < AAAAAAAA;i++ ){
-    //     //TODO
-    // }
+    for(int i = 0; i <  dimension; i++)
+        write_tour_city(tour[i]);
     write_tour_eof();
 }
 
 
-/*TODO
-	*alocar vetorzao para todos os arcos da graph								OK  
-	*calcular a distancia entre todas as cidades e inicializar a struct ARC		OK
-	*inserir todos os arcos criados no vetorzao									OK
-	*ordenar por ordem nao-decrescente											OK
-	*GERAR A MST                                                                OK
-    *pesquisa primeiro em profundidade ????
-    *tour
-    *liberar os bagulho(ver direito pq acho q vai dar merda)                    RESPECT MY HISTORY
-*/
+void free_tour(){
+    free(vertex_vet);
+    free(tour);
+}

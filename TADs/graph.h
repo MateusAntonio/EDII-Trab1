@@ -3,8 +3,6 @@
 
 typedef struct graph Graph;
 
-int calc_arc_array_size(int dimension);
-
 Graph* generate_graph(void* array, int dimension);
 
 void print_graph(Graph* graph);
@@ -21,8 +19,6 @@ void write_mst(char* name, char* type, int dimension, Graph* mst);
 
 void write_tour(char* name, int dimension);
 
-void teste();
-
-int* generate_tour(Graph* mst);
+void generate_tour(int dimension);
 
 #endif //GRAPH_H
