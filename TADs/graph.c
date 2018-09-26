@@ -173,10 +173,10 @@ void sort_graph(Graph* graph){
 
 
 void init_tour(int dimension){
-    vertex_vet = malloc(dimension+1 * sizeof(vertex_vet));
-
-    for(int i = 1; i < dimension+1; i++)     //init the array of vertex wich the id is the index 
-        create_vertex(i);
+    vertex_vet = malloc(dimension+1 * sizeof(Vertex));
+  
+    for(int i = 0; i < dimension+1; i++)     //init the array of vertex wich the id is the index 
+        vertex_vet[i] = create_vertex(i);
 }
 
 
@@ -185,7 +185,7 @@ Graph* generate_mst(Graph* graph, int mst_dimension){
     Graph* mst = init_graph(mst_dimension); //mst must contain the number of vertex-1 arcs 
     UF_init(mst_dimension+1); //union find must have an array with the size of vertex
 
-    // init_tour(mst_dimension);
+    // init_tour(mst_dimension+1); //TODO seg fault
 
     for(int i = 0; i < graph->size; i++){   
         City a = graph->arc_array[i].cityA;     //get the first city of the arc
@@ -214,28 +214,32 @@ Graph* generate_mst(Graph* graph, int mst_dimension){
 }
 
 
-int* generate_tour(Graph* mst){
-    int dimension = mst->size;
+// int* generate_tour(Graph* mst){
+//     int dimension = mst->size;
 
-    int j;
-    init_tour(dimension);
+//     int j;
+//     init_tour(dimension+1);
 
-    for ( j = 0; j < dimension; j++){
-        int A_id = get_city_id(mst->arc_array[j].cityA);
-        int B_id = get_city_id(mst->arc_array[j].cityB);
-
-        vertex_vet[A_id] = add_adj_vertex(vertex_vet[A_id], B_id);
-        vertex_vet[B_id] = add_adj_vertex(vertex_vet[B_id], A_id);            
-    }
+//     for ( j = 0; j < dimension; j++){
+//         int A_id = get_city_id(mst->arc_array[j].cityA);
+//         int B_id = get_city_id(mst->arc_array[j].cityB);
 
 
-    for(int i = 1; i < dimension+1; i++) // TODO ta soh printando ainda
-        print_vertex(vertex_vet[i]);
+//         vertex_vet[A_id] = add_adj_vertex(vertex_vet[A_id], B_id);
+//         // print_vertex(vertex_vet[A_id]);
+//         vertex_vet[B_id] = add_adj_vertex(vertex_vet[B_id], A_id);
+//         // print_vertex(vertex_vet[B_id]);
 
-    free(vertex_vet);
+//     }
 
-    return NULL; //TODO mudar retorno
-}
+
+//     for(int i = 0; i < dimension+2; i++) // TODO ta soh printando ainda
+//         print_vertex(vertex_vet[i]);
+
+//     free(vertex_vet);
+
+//     return NULL; //TODO mudar retorno
+// }
 
 void write_mst(char* name, char* type, int dimension, Graph* mst){
     write_mst_info(name, type, dimension);

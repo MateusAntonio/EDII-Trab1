@@ -55,7 +55,7 @@ int main(int argc, char* argv[]){
     write_mst(tsp_name, tsp_type, tsp_dimension, mst);
 
 
-    generate_tour(mst);
+    // generate_tour(mst);
     //generates the .tour file
     // write_tour(tsp_name, tsp_dimension);
 
