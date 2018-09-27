@@ -3,11 +3,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// struct city{
-//     int id;
-//     float x;
-//     float y;
-// };
 
 City init_city(int id, float x, float y){
     City city;
@@ -20,7 +15,7 @@ City init_city(int id, float x, float y){
 unsigned int dist_city(City cityA, City cityB){
     unsigned int xd = cityB.x - cityA.x;
     unsigned int yd = cityB.y - cityA.y;
-    return round(sqrt((xd*xd) + (yd*yd))); //TODO isso vai dar merda no maior caso de teste
+    return round(sqrt((xd*xd) + (yd*yd)));
 }
 
 void print_city(City city){

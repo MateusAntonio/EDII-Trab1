@@ -30,15 +30,21 @@ int main(int argc, char* argv[]){
     free_graph(graph);
 
     //generates the .mst file
-    write_mst(tsp_name, tsp_type, tsp_dimension, mst);
-    free_graph(mst);
+    write_mst(tsp_name, tsp_dimension, mst);
 
     //generates the tour and .tour file
     generate_tour(tsp_dimension);
     write_tour(tsp_name, tsp_dimension);
 
+    //calculates the cost of the tour and the mst
+    //(function just prints the costs)
+    // calc_tour_and_mst_cost(mst, city_array, tsp_dimension);
+
+
     //frees the allocated memory :)
     free_tour();
+    free_graph(mst);
     free_tsp(tsp); 
+    
     return 0;
 }

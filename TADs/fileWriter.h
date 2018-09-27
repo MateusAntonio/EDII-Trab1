@@ -1,7 +1,7 @@
 #ifndef FILE_WRITER_H
 #define FILE_WRITER_H
 
-void write_mst_info(char* name, char* type, int dimension);
+void write_mst_info(char* name, int dimension);
 
 void write_mst_arc(int id1, int id2);
 

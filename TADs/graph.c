@@ -68,7 +68,7 @@ Vertex create_vertex(int id){
     new_vertex.id = id;
     new_vertex.visited = false;
     for(int i = 0; i < 6; i++)
-        new_vertex.Adj[i] = 0;
+        new_vertex.Adj[i] = 0;  //set to 0 cuz there is no city with id 0
 
     return new_vertex;
 }
@@ -182,8 +182,8 @@ Graph* generate_mst(Graph* graph, int mst_dimension){
 
 
 void dfs(Vertex v){
-    vertex_vet[v.id].visited = true;
-    tour[tour_index++] = v.id;
+    vertex_vet[v.id].visited = true;    //mark as visited
+    tour[tour_index++] = v.id;          //add the id of the vertex in the tour array
     
     for(int i = 0; i < 6; i++){
         //check  if there is connection to other vertex and if vertex is already visited
@@ -197,12 +197,12 @@ void dfs(Vertex v){
 void generate_tour(int dimension){
     tour = malloc(dimension * sizeof(*tour));
 
-    dfs(vertex_vet[1]);
+    dfs(vertex_vet[1]);     //depth-first-search in the graph
 }
 
 
-void write_mst(char* name, char* type, int dimension, Graph* mst){
-    write_mst_info(name, type, dimension);
+void write_mst(char* name, int dimension, Graph* mst){
+    write_mst_info(name, dimension);
     for(int i = 0; i < mst->size; i++){
         int id1 = get_city_id(mst->arc_array[i].cityA);
         int id2 = get_city_id(mst->arc_array[i].cityB);
@@ -212,9 +212,9 @@ void write_mst(char* name, char* type, int dimension, Graph* mst){
 }
 
 
-void write_tour(char* name, int dimension){ //TODO receber vetor de int com o tour
+void write_tour(char* name, int dimension){
     write_tour_info(name, dimension);
-    for(int i = 0; i <  dimension; i++)
+    for(int i = 0; i < tour_index; i++)
         write_tour_city(tour[i]);
     write_tour_eof();
 }
@@ -223,4 +223,28 @@ void write_tour(char* name, int dimension){ //TODO receber vetor de int com o to
 void free_tour(){
     free(vertex_vet);
     free(tour);
+}
+
+void calc_tour_and_mst_cost(Graph* mst, void* tsp_city_array, int dimension){
+    unsigned int tour_cost = 0;
+    int mst_cost = 0;
+    City* city_array = (City*)tsp_city_array;
+
+    for(int i = 0; i < dimension; i++)
+        mst_cost += mst->arc_array[i].weight; 
+    printf("custo mst: %d\n", mst_cost);
+
+    for(int i = 0; i < tour_index; i++){
+        int city_id = tour[i];
+        City a = city_array[city_id-1];     //get the city by the id in the city array
+        City b;
+        if(city_id == tour_index){
+            b = city_array[tour[0]-1];
+            tour_cost += dist_city(a,b);    //if is in the last position of array, get the first city of array
+            break;
+        }
+        b = city_array[tour[i+1]-1];        //get the next city of the tour
+        tour_cost += dist_city(a,b);    
+    }
+    printf("custo tour: %d\n", tour_cost);  //NOT GIVING CORRECT RESULTS
 }

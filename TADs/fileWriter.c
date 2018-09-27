@@ -6,17 +6,19 @@
 FILE* mst_file;
 FILE* tour_file;
 
-void write_mst_info(char* name, char* type, int dimension){
+void write_mst_info(char* name, int dimension){
     char filename[52] = "mst/";
     sprintf(filename + strlen(filename), "%s", name); //creates a name to be the file name
     sprintf(filename + strlen(filename), ".mst");
 
     mst_file = fopen(filename, "w");
-    if(!mst_file)
+    if(!mst_file){
         printf("Could not open %s. Aborting!", filename);
+        return;
+    }
 
     fprintf(mst_file, "NAME: %s\n", name);
-    fprintf(mst_file, "TYPE: %s\n", type);
+    fprintf(mst_file, "TYPE: MST\n");
     fprintf(mst_file, "DIMENSION: %d\n", dimension);
     fprintf(mst_file, "MST_SECTION\n");
 }
@@ -36,8 +38,10 @@ void write_tour_info(char* name, int dimension){
     sprintf(filename + strlen(filename), ".tour");
 
     tour_file = fopen(filename, "w");
-    if(!tour_file)
+    if(!tour_file){
         printf("Could not open %s. Aborting!", filename);
+        return;
+    }
 
     fprintf(tour_file, "NAME: %s\n", name);
     fprintf(tour_file, "TYPE: TOUR\n");
